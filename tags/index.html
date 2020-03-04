@@ -79,12 +79,12 @@
 
 
 
-<meta name="description" content="一個記錄學習 FPGA, Verilog 等的地方">
+<meta name="description" content="燃燒 coding 魂">
 <meta property="og:type" content="website">
 <meta property="og:title" content="tags">
 <meta property="og:url" content="http://yoursite.com/tags/index.html">
 <meta property="og:site_name" content="學習記錄">
-<meta property="og:description" content="一個記錄學習 FPGA, Verilog 等的地方">
+<meta property="og:description" content="燃燒 coding 魂">
 <meta property="og:locale" content="zh_TW">
 <meta property="article:published_time" content="2020-03-04T08:42:04.000Z">
 <meta property="article:modified_time" content="2020-03-04T08:45:03.955Z">
@@ -160,7 +160,7 @@
       </a>
     </div>
       
-        <p class="site-subtitle">燃燒 coding 魂</p>
+        <p class="site-subtitle"></p>
       
   </div>
 
@@ -318,7 +318,7 @@
                 alt="Tien Yao" />
             
               <p class="site-author-name" itemprop="name">Tien Yao</p>
-              <p class="site-description motion-element" itemprop="description">一個記錄學習 FPGA, Verilog 等的地方</p>
+              <p class="site-description motion-element" itemprop="description">燃燒 coding 魂</p>
           </div>
 
           <nav class="site-state motion-element">
@@ -562,6 +562,104 @@
   
 
   
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase-firestore.js"></script>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.5.1/bluebird.core.min.js"></script>
+  
+  <script>
+    (function () {
+
+      firebase.initializeApp({
+        apiKey: 'AIzaSyBW5uJUWtsUAvoY_3IMfAZlP6zgoOSIwP4',
+        projectId: 'tienyaohsuhexo'
+      })
+
+      function getCount(doc, increaseCount) {
+        //increaseCount will be false when not in article page
+
+        return doc.get().then(function (d) {
+          var count
+          if (!d.exists) { //has no data, initialize count
+            if (increaseCount) {
+              doc.set({
+                count: 1
+              })
+              count = 1
+            }
+            else {
+              count = 0
+            }
+          }
+          else { //has data
+            count = d.data().count
+            if (increaseCount) {
+              if (!(window.localStorage && window.localStorage.getItem(title))) { //if first view this article
+                doc.set({ //increase count
+                  count: count + 1
+                })
+                count++
+              }
+            }
+          }
+          if (window.localStorage && increaseCount) { //mark as visited
+            localStorage.setItem(title, true)
+          }
+
+          return count
+        })
+      }
+
+      function appendCountTo(el) {
+        return function (count) {
+          $(el).append(
+            $('<span>').addClass('post-visitors-count').append(
+              $('<span>').addClass('post-meta-divider').text('|')
+            ).append(
+              $('<span>').addClass('post-meta-item-icon').append(
+                $('<i>').addClass('fa fa-users')
+              )
+              ).append($('<span>').text('閱讀次數 ' + count))
+          )
+        }
+      }
+
+      var db = firebase.firestore()
+      var articles = db.collection('articles')
+
+      //https://hexo.io/zh-tw/docs/variables.html
+      var isPost = 'tags'.length > 0
+      var isArchive = '' === 'true'
+      var isCategory = ''.length > 0
+      var isTag = ''.length > 0
+
+      if (isPost) { //is article page
+        var title = 'tags'
+        var doc = articles.doc(title)
+
+        getCount(doc, true).then(appendCountTo($('.post-meta')))
+      }
+      else if (!isArchive && !isCategory && !isTag) { //is index page
+        var titles = [] //array to titles
+
+        var postsstr = '' //if you have a better way to get titles of posts, please change it
+        eval(postsstr)
+
+        var promises = titles.map(function (title) {
+          return articles.doc(title)
+        }).map(function (doc) {
+          return getCount(doc)
+        })
+        Promise.all(promises).then(function (counts) {
+          var metas = $('.post-meta')
+          counts.forEach(function (val, idx) {
+            appendCountTo(metas[idx])(val)
+          })
+        })
+      }
+    })()
+  </script>
+
 
   
 
