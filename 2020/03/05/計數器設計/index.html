@@ -79,13 +79,15 @@
 
 
 
-<meta name="description" content="燃燒 coding 魂">
-<meta property="og:type" content="website">
-<meta property="og:title" content="TY的學習筆記">
-<meta property="og:url" content="http://yoursite.com/categories/verilog/index.html">
+<meta name="description" content="FPGA 幾乎會用到計數器相關設計，如 Watch dog、 PWM 、除頻器等等。而計數器設計大致會有二個條件 :  什麼條件下計數 什麼條件下重新計數  掌握了這二個條件就可以設計計數器，以下為一個簡單計數器設計。在 iEn 為 1 時計數器加一。assign AddCnt &#x3D; iEn;在計數器數到使用者設定的值時，下一個clock進來時重新計數。assign EndCnt &#x3D; AddCnt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="計數器設計">
+<meta property="og:url" content="http://yoursite.com/2020/03/05/%E8%A8%88%E6%95%B8%E5%99%A8%E8%A8%AD%E8%A8%88/index.html">
 <meta property="og:site_name" content="TY的學習筆記">
-<meta property="og:description" content="燃燒 coding 魂">
+<meta property="og:description" content="FPGA 幾乎會用到計數器相關設計，如 Watch dog、 PWM 、除頻器等等。而計數器設計大致會有二個條件 :  什麼條件下計數 什麼條件下重新計數  掌握了這二個條件就可以設計計數器，以下為一個簡單計數器設計。在 iEn 為 1 時計數器加一。assign AddCnt &#x3D; iEn;在計數器數到使用者設定的值時，下一個clock進來時重新計數。assign EndCnt &#x3D; AddCnt">
 <meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2020-03-05T01:57:09.000Z">
+<meta property="article:modified_time" content="2020-03-05T02:37:26.973Z">
 <meta property="article:author" content="Tien Yao">
 <meta name="twitter:card" content="summary">
 
@@ -117,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/categories/verilog/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/03/05/計數器設計/"/>
 
 
 
 
 
-  <title>分類: verilog | TY的學習筆記</title>
+  <title>計數器設計 | TY的學習筆記</title>
   
 
 
@@ -142,7 +144,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -236,55 +238,172 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block category">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>verilog<small>分類</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/05/%E8%A8%88%E6%95%B8%E5%99%A8%E8%A8%AD%E8%A8%88/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tien Yao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TY的學習筆記">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2020/03/05/%E8%A8%88%E6%95%B8%E5%99%A8%E8%A8%AD%E8%A8%88/" itemprop="url">
-              
-                <span itemprop="name">計數器設計</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">計數器設計</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2020-03-05T09:57:09+08:00"
-              content="2020-03-05" >
-          03-05
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2020-03-05T09:57:09+08:00">
+                2020-03-05
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/verilog/" itemprop="url" rel="index">
+                    <span itemprop="name">verilog</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    </div>
+      
 
+      
+        <p>FPGA 幾乎會用到計數器相關設計，如 Watch dog、 PWM 、除頻器等等。<br>而計數器設計大致會有二個條件 :</p>
+<ol>
+<li>什麼條件下計數</li>
+<li>什麼條件下重新計數</li>
+</ol>
+<p>掌握了這二個條件就可以設計計數器，以下為一個簡單計數器設計。<br>在 iEn 為 1 時計數器加一。<br><code>assign AddCnt = iEn;</code><br>在計數器數到使用者設定的值時，下一個clock進來時重新計數。<br><code>assign EndCnt = AddCnt &amp;&amp; (rvCnt_q == MOD — 1);</code><br>而 iClr 為 1 時計數器清 0，iLoad 為 1 時可填入計數初始值。<br>掌握了這二個條件就可以設計計數器了。</p>
+<a id="more"></a>
+
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">`<span class="meta-keyword">timescale</span> 1ns/100ps  </span></span><br><span class="line"><span class="comment">////// ... . .. --.. .   - .... .   -- --- -- . -. - ////// 									  																								  																			</span></span><br><span class="line"><span class="comment">// Author              : TienYao			  																</span></span><br><span class="line"><span class="comment">// Source Code Name	   : counter.v					  																				</span></span><br><span class="line"><span class="comment">// Function Description: Mod [3:0] Counter 														 </span></span><br><span class="line"><span class="comment">// ===========================================================</span></span><br><span class="line"><span class="keyword">module</span> counter</span><br><span class="line">#(<span class="keyword">parameter</span> MOD = <span class="number">10</span>)  (</span><br><span class="line">    <span class="keyword">input</span> clk,</span><br><span class="line">    <span class="keyword">input</span> rstN,</span><br><span class="line"></span><br><span class="line">    <span class="keyword">input</span> iClr,</span><br><span class="line">    <span class="keyword">input</span> iEn,</span><br><span class="line">    <span class="keyword">input</span> iLoad,</span><br><span class="line">    <span class="keyword">input</span> [<span class="number">3</span>:<span class="number">0</span>] iModValue,</span><br><span class="line">    <span class="keyword">output</span> oCntDone,</span><br><span class="line">    <span class="keyword">output</span> [<span class="number">3</span>:<span class="number">0</span>] ovCntValue</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">wire</span> AddCnt;</span><br><span class="line"><span class="keyword">wire</span> EndCnt;</span><br><span class="line"><span class="keyword">reg</span> [<span class="number">3</span>:<span class="number">0</span>] rvCnt_d , rvCnt_q;</span><br><span class="line"></span><br><span class="line"><span class="keyword">assign</span> AddCnt = iEn;</span><br><span class="line"><span class="keyword">assign</span> EndCnt = AddCnt &amp;&amp; (rvCnt_q == MOD - <span class="number">1</span>);</span><br><span class="line"><span class="keyword">always</span> @(<span class="keyword">posedge</span> clk <span class="keyword">or</span> <span class="keyword">negedge</span> rstN) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(!rstN)</span><br><span class="line">        rvCnt_q &lt;= <span class="number">4'h0</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        rvCnt_q &lt;= rvCnt_d;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> @(*) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(EndCnt || iClr)</span><br><span class="line">        rvCnt_d = <span class="number">4'h0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(iLoad)</span><br><span class="line">        rvCnt_d = iModValue;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(AddCnt)</span><br><span class="line">        rvCnt_d = rvCnt_q + <span class="number">1'b1</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        rvCnt_d = rvCnt_q;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">assign</span> ovCntValue = rvCnt_q;</span><br><span class="line"><span class="keyword">assign</span> oCntDone   = AddCnt &amp;&amp; (rvCnt_q == MOD - <span class="number">1</span>) ? <span class="number">1'b1</span> : <span class="number">1'b0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></table></figure>
+
+<blockquote class="imgur-embed-pub" lang="en" data-id="BxkQ5X2"><a href="//imgur.com/BxkQ5X2" target="_blank" rel="noopener"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/05/generate-%E7%94%A8%E6%B3%95/" rel="next" title="generate 用法">
+                <i class="fa fa-chevron-left"></i> generate 用法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -292,6 +411,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -514,6 +637,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
@@ -630,13 +757,13 @@
       var articles = db.collection('articles')
 
       //https://hexo.io/zh-tw/docs/variables.html
-      var isPost = ''.length > 0
+      var isPost = '計數器設計'.length > 0
       var isArchive = '' === 'true'
       var isCategory = ''.length > 0
       var isTag = ''.length > 0
 
       if (isPost) { //is article page
-        var title = ''
+        var title = '計數器設計'
         var doc = articles.doc(title)
 
         getCount(doc, true).then(appendCountTo($('.post-meta')))
@@ -644,43 +771,7 @@
       else if (!isArchive && !isCategory && !isTag) { //is index page
         var titles = [] //array to titles
 
-        var postsstr = 'titles.push("計數器設計");' //if you have a better way to get titles of posts, please change it
-        eval(postsstr)
-
-        var promises = titles.map(function (title) {
-          return articles.doc(title)
-        }).map(function (doc) {
-          return getCount(doc)
-        })
-        Promise.all(promises).then(function (counts) {
-          var metas = $('.post-meta')
-          counts.forEach(function (val, idx) {
-            appendCountTo(metas[idx])(val)
-          })
-        })
-      }
-    })()
-  </script>
-
-
-  
-
-  
-  
-
-  
-
-  
-
-  
-  <script type="text/javascript" src="/js/src/exturl.js?v=5.1.4"></script>
-
-
-</body>
-</html>
-itles = [] //array to titles
-
-        var postsstr = 'titles.push("generate 用法");titles.push("Verilog_HDL_訊號命名原則");' //if you have a better way to get titles of posts, please change it
+        var postsstr = '' //if you have a better way to get titles of posts, please change it
         eval(postsstr)
 
         var promises = titles.map(function (title) {

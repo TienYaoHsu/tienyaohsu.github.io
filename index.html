@@ -81,9 +81,9 @@
 
 <meta name="description" content="燃燒 coding 魂">
 <meta property="og:type" content="website">
-<meta property="og:title" content="學習記錄">
+<meta property="og:title" content="TY的學習筆記">
 <meta property="og:url" content="http://yoursite.com/index.html">
-<meta property="og:site_name" content="學習記錄">
+<meta property="og:site_name" content="TY的學習筆記">
 <meta property="og:description" content="燃燒 coding 魂">
 <meta property="og:locale" content="zh_TW">
 <meta property="article:author" content="Tien Yao">
@@ -123,7 +123,7 @@
 
 
 
-  <title>學習記錄</title>
+  <title>TY的學習筆記</title>
   
 
 
@@ -154,7 +154,7 @@
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">學習記錄</span>
+        <span class="site-title">TY的學習筆記</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -251,6 +251,310 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/05/%E8%A8%88%E6%95%B8%E5%99%A8%E8%A8%AD%E8%A8%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tien Yao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TY的學習筆記">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/03/05/%E8%A8%88%E6%95%B8%E5%99%A8%E8%A8%AD%E8%A8%88/" itemprop="url">計數器設計</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2020-03-05T09:57:09+08:00">
+                2020-03-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/verilog/" itemprop="url" rel="index">
+                    <span itemprop="name">verilog</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>FPGA 幾乎會用到計數器相關設計，如 Watch dog、 PWM 、除頻器等等。<br>而計數器設計大致會有二個條件 :</p>
+<ol>
+<li>什麼條件下計數</li>
+<li>什麼條件下重新計數</li>
+</ol>
+<p>掌握了這二個條件就可以設計計數器，以下為一個簡單計數器設計。<br>在 iEn 為 1 時計數器加一。<br><code>assign AddCnt = iEn;</code><br>在計數器數到使用者設定的值時，下一個clock進來時重新計數。<br><code>assign EndCnt = AddCnt &amp;&amp; (rvCnt_q == MOD — 1);</code><br>而 iClr 為 1 時計數器清 0，iLoad 為 1 時可填入計數初始值。<br>掌握了這二個條件就可以設計計數器了。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/03/05/%E8%A8%88%E6%95%B8%E5%99%A8%E8%A8%AD%E8%A8%88/#more" rel="contents">
+              閱讀全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/05/generate-%E7%94%A8%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tien Yao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TY的學習筆記">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/03/05/generate-%E7%94%A8%E6%B3%95/" itemprop="url">generate 用法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2020-03-05T09:36:47+08:00">
+                2020-03-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Verilog/" itemprop="url" rel="index">
+                    <span itemprop="name">Verilog</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>Generate 好用之處在於可以依不同條件下產生不同實體模組這樣對 coding 的靈活性有很大的幫助。</p>
+<ol>
+<li>generate 有 generate for, generate if 及 generate case 三種用法。</li>
+<li>generate for 變數要以 genvar 關鍵字定義。</li>
+<li>generate for 內容需加 begin end 包起來。</li>
+<li>generate for 後面需加名子 ex : begin : name</li>
+</ol>
+<p>以下是使用 generate for, generate if 及 generate case 的範例</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/03/05/generate-%E7%94%A8%E6%B3%95/#more" rel="contents">
+              閱讀全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/04/ARTY-A7-%E9%96%8B%E7%99%BC%E6%9D%BF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -260,7 +564,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="學習記錄">
+      <meta itemprop="name" content="TY的學習筆記">
     </span>
 
     
@@ -403,7 +707,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="學習記錄">
+      <meta itemprop="name" content="TY的學習筆記">
     </span>
 
     
@@ -490,10 +794,6 @@
 <p>除特殊訊號外FPGA輸入實際名稱用大寫，字跟字間用底線區分。<br><code>input SIGNAL_NAME</code></p>
 <p>除特殊訊號外FPGA輸出實際名稱用大寫，字跟字間用底線區分。<br><code>output SIGNAL_NAME</code></p>
 <p>sub module 輸入訊號前面加i<br><code>input iSignalName</code></p>
-<p>sub module 輸出訊號前面加o<br><code>output oSignalName</code></p>
-<p>reg 類型訊號前面加r<br><code>reg rSignalName</code></p>
-<p>wire 類型訊號前面加w<br><code>wire wSignalName</code></p>
-<p>輸入訊號為 vectors 類型訊號前面加 iv<br><code>input [7:0] ivSignalName</code></p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2020/03/03/Verilog-HDL-%E8%A8%8A%E8%99%9F%E5%91%BD%E5%90%8D%E5%8E%9F%E5%89%87/#more" rel="contents">
@@ -586,7 +886,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">文章</span>
                 </a>
               </div>
@@ -597,7 +897,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">分類</span>
                 </a>
               </div>
@@ -896,7 +1196,7 @@
       else if (!isArchive && !isCategory && !isTag) { //is index page
         var titles = [] //array to titles
 
-        var postsstr = 'titles.push("ARTY_A7_開發板");titles.push("Verilog_HDL_訊號命名原則");' //if you have a better way to get titles of posts, please change it
+        var postsstr = 'titles.push("計數器設計");titles.push("generate 用法");titles.push("ARTY_A7_開發板");titles.push("Verilog_HDL_訊號命名原則");' //if you have a better way to get titles of posts, please change it
         eval(postsstr)
 
         var promises = titles.map(function (title) {
