@@ -86,8 +86,8 @@
 <meta property="og:site_name" content="TY的學習筆記">
 <meta property="og:description" content="FPGA 幾乎會用到計數器相關設計，如 Watch dog、 PWM 、除頻器等等。而計數器設計大致會有二個條件 :  什麼條件下計數 什麼條件下重新計數  掌握了這二個條件就可以設計計數器，以下為一個簡單計數器設計。在 iEn 為 1 時計數器加一。assign AddCnt &#x3D; iEn;在計數器數到使用者設定的值時，下一個clock進來時重新計數。assign EndCnt &#x3D; AddCnt">
 <meta property="og:locale" content="zh_TW">
-<meta property="article:published_time" content="2020-03-05T01:57:09.000Z">
-<meta property="article:modified_time" content="2020-03-05T02:37:26.973Z">
+<meta property="article:published_time" content="2020-03-05T01:57:00.000Z">
+<meta property="article:modified_time" content="2020-03-05T03:38:16.262Z">
 <meta property="article:author" content="Tien Yao">
 <meta name="twitter:card" content="summary">
 
@@ -281,7 +281,7 @@
               
                 <span class="post-meta-item-text">發表於</span>
               
-              <time title="創建於" itemprop="dateCreated datePublished" datetime="2020-03-05T09:57:09+08:00">
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2020-03-05T09:57:00+08:00">
                 2020-03-05
               </time>
             
@@ -304,8 +304,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/verilog/" itemprop="url" rel="index">
-                    <span itemprop="name">verilog</span>
+                  <a href="/categories/Verilog/" itemprop="url" rel="index">
+                    <span itemprop="name">Verilog</span>
                   </a>
                 </span>
 
@@ -468,7 +468,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">分類</span>
                 </a>
               </div>
@@ -691,104 +691,6 @@
   
 
   
-  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase-firestore.js"></script>
-  
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.5.1/bluebird.core.min.js"></script>
-  
-  <script>
-    (function () {
-
-      firebase.initializeApp({
-        apiKey: 'AIzaSyBW5uJUWtsUAvoY_3IMfAZlP6zgoOSIwP4',
-        projectId: 'tienyaohsuhexo'
-      })
-
-      function getCount(doc, increaseCount) {
-        //increaseCount will be false when not in article page
-
-        return doc.get().then(function (d) {
-          var count
-          if (!d.exists) { //has no data, initialize count
-            if (increaseCount) {
-              doc.set({
-                count: 1
-              })
-              count = 1
-            }
-            else {
-              count = 0
-            }
-          }
-          else { //has data
-            count = d.data().count
-            if (increaseCount) {
-              if (!(window.localStorage && window.localStorage.getItem(title))) { //if first view this article
-                doc.set({ //increase count
-                  count: count + 1
-                })
-                count++
-              }
-            }
-          }
-          if (window.localStorage && increaseCount) { //mark as visited
-            localStorage.setItem(title, true)
-          }
-
-          return count
-        })
-      }
-
-      function appendCountTo(el) {
-        return function (count) {
-          $(el).append(
-            $('<span>').addClass('post-visitors-count').append(
-              $('<span>').addClass('post-meta-divider').text('|')
-            ).append(
-              $('<span>').addClass('post-meta-item-icon').append(
-                $('<i>').addClass('fa fa-users')
-              )
-              ).append($('<span>').text('閱讀次數 ' + count))
-          )
-        }
-      }
-
-      var db = firebase.firestore()
-      var articles = db.collection('articles')
-
-      //https://hexo.io/zh-tw/docs/variables.html
-      var isPost = '計數器設計'.length > 0
-      var isArchive = '' === 'true'
-      var isCategory = ''.length > 0
-      var isTag = ''.length > 0
-
-      if (isPost) { //is article page
-        var title = '計數器設計'
-        var doc = articles.doc(title)
-
-        getCount(doc, true).then(appendCountTo($('.post-meta')))
-      }
-      else if (!isArchive && !isCategory && !isTag) { //is index page
-        var titles = [] //array to titles
-
-        var postsstr = '' //if you have a better way to get titles of posts, please change it
-        eval(postsstr)
-
-        var promises = titles.map(function (title) {
-          return articles.doc(title)
-        }).map(function (doc) {
-          return getCount(doc)
-        })
-        Promise.all(promises).then(function (counts) {
-          var metas = $('.post-meta')
-          counts.forEach(function (val, idx) {
-            appendCountTo(metas[idx])(val)
-          })
-        })
-      }
-    })()
-  </script>
-
 
   
 
