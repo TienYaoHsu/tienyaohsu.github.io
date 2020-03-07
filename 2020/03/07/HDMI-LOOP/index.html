@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-tw">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ALINX,HDMI," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="HDMI LOOPHDMI LOOP為使用Sil9013作為接收端，sil9134作為輸出端，中間經過FPGA但不處理任何訊號只敲一級clock後輸出訊號。FPGA一開始會經I2C對sil9134作初始化的動作，架構如下所示 FPGA HDMI LOOP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HDMI_LOOP">
+<meta property="og:url" content="http://yoursite.com/2020/03/07/HDMI-LOOP/index.html">
+<meta property="og:site_name" content="TY的學習筆記">
+<meta property="og:description" content="HDMI LOOPHDMI LOOP為使用Sil9013作為接收端，sil9134作為輸出端，中間經過FPGA但不處理任何訊號只敲一級clock後輸出訊號。FPGA一開始會經I2C對sil9134作初始化的動作，架構如下所示 FPGA HDMI LOOP">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2020-03-07T09:50:02.000Z">
+<meta property="article:modified_time" content="2020-03-07T09:55:22.070Z">
+<meta property="article:author" content="Tien Yao">
+<meta property="article:tag" content="ALINX">
+<meta property="article:tag" content="HDMI">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/03/07/HDMI-LOOP/"/>
+
+
+
+
+
+  <title>HDMI_LOOP | TY的學習筆記</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-tw">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">TY的學習筆記</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            about
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/07/HDMI-LOOP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tien Yao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TY的學習筆記">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">HDMI_LOOP</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2020-03-07T17:50:02+08:00">
+                2020-03-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA/" itemprop="url" rel="index">
+                    <span itemprop="name">FPGA</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="HDMI-LOOP"><a href="#HDMI-LOOP" class="headerlink" title="HDMI LOOP"></a>HDMI LOOP</h1><p>HDMI LOOP為使用Sil9013作為接收端，sil9134作為輸出端，中間經過FPGA但不處理任何訊號只敲一級clock後輸出訊號。<br>FPGA一開始會經I2C對sil9134作初始化的動作，架構如下所示</p>
+<blockquote class="imgur-embed-pub" lang="en" data-id="a/SkPZ7d2"><a href="//imgur.com/a/SkPZ7d2" target="_blank" rel="noopener">FPGA HDMI LOOP</a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+
+<a id="more"></a>
+
+<h2 id="TOP層RTL-code"><a href="#TOP層RTL-code" class="headerlink" title="TOP層RTL code"></a>TOP層RTL code</h2><p>TOP層為整合所有submdoule。<br><code>wWrite</code>為上電後等待一段時間才讓I2C開始動作</p>
+<ul>
+<li>HDMI_LOOP_TOP top module</li>
+</ul>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">module</span> HDMI_LOOP_TOP(</span><br><span class="line"><span class="keyword">input</span> SYS_CLK_P,</span><br><span class="line"><span class="keyword">input</span> SYS_CLK_N,</span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="keyword">inout</span> T_HDMI_SCL,</span><br><span class="line"><span class="keyword">inout</span> T_HDMI_SDA,</span><br><span class="line"><span class="keyword">output</span> T_HDMI_RESET_N,</span><br><span class="line"><span class="keyword">output</span> T_HDMI_CLK,</span><br><span class="line"><span class="keyword">output</span> T_HDMI_HS,</span><br><span class="line"><span class="keyword">output</span> T_HDMI_VS,</span><br><span class="line"><span class="keyword">output</span> T_HDMI_DE,</span><br><span class="line"><span class="keyword">output</span> [<span class="number">23</span>:<span class="number">0</span>] T_DATA,</span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="keyword">output</span> R_HDMI_RESET_N,</span><br><span class="line"><span class="keyword">input</span> R_HDMI_CLK,</span><br><span class="line"><span class="keyword">input</span> R_HDMI_HS,</span><br><span class="line"><span class="keyword">input</span> R_HDMI_VS,</span><br><span class="line"><span class="keyword">input</span> R_HDMI_DE,</span><br><span class="line"><span class="keyword">input</span> [<span class="number">23</span>:<span class="number">0</span>] R_DATA</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">wire</span> locked;</span><br><span class="line"><span class="keyword">wire</span> clk_27Mhz;</span><br><span class="line"><span class="keyword">wire</span> rstN;</span><br><span class="line"></span><br><span class="line"><span class="keyword">wire</span> wGo;</span><br><span class="line"><span class="keyword">wire</span> wWrite;</span><br><span class="line"><span class="keyword">wire</span> wSclEn, wSdaEn;</span><br><span class="line"><span class="keyword">reg</span> [<span class="number">9</span>:<span class="number">0</span>] rvCnt_d, rvCnt_q;</span><br><span class="line"><span class="keyword">wire</span> [<span class="number">23</span>:<span class="number">0</span>] wvI2cStream;</span><br><span class="line"><span class="keyword">wire</span> wSetDataReq;</span><br><span class="line"><span class="keyword">wire</span> [<span class="number">7</span>:<span class="number">0</span>] wvSetData;</span><br><span class="line"><span class="keyword">wire</span> wI2cIdle;</span><br><span class="line"></span><br><span class="line"><span class="keyword">reg</span> rHs_d0, rHs_q0;</span><br><span class="line"><span class="keyword">reg</span> rVs_d0, rVs_q0;</span><br><span class="line"><span class="keyword">reg</span> rDe_d0, rDe_q0;</span><br><span class="line"><span class="keyword">reg</span> [<span class="number">23</span>:<span class="number">0</span>] rvData_d0, rvData_q0;</span><br><span class="line"></span><br><span class="line"><span class="keyword">reg</span> rHs_d1, rHs_q1;</span><br><span class="line"><span class="keyword">reg</span> rVs_d1, rVs_q1;</span><br><span class="line"><span class="keyword">reg</span> rDe_d1, rDe_q1;</span><br><span class="line"><span class="keyword">reg</span> [<span class="number">23</span>:<span class="number">0</span>] rvData_d1, rvData_q1;</span><br><span class="line"></span><br><span class="line">clk_wiz_0 clk_wiz_0_inst (</span><br><span class="line">  <span class="comment">// Clock out ports</span></span><br><span class="line">  <span class="variable">.clk_out1</span>     (clk_27Mhz),</span><br><span class="line">  <span class="comment">// Status and control signals</span></span><br><span class="line">  <span class="variable">.reset</span>        (<span class="number">1'b0</span>),</span><br><span class="line">  <span class="variable">.locked</span>       (locked),</span><br><span class="line"> <span class="comment">// Clock in ports</span></span><br><span class="line">  <span class="variable">.clk_in1_p</span>    (SYS_CLK_P),</span><br><span class="line">  <span class="variable">.clk_in1_n</span>    (SYS_CLK_N)</span><br><span class="line"> );</span><br><span class="line"><span class="keyword">assign</span> rstN = locked;</span><br><span class="line"><span class="keyword">assign</span> T_HDMI_RESET_N = locked;</span><br><span class="line"><span class="keyword">assign</span> R_HDMI_RESET_N = locked;</span><br><span class="line"><span class="keyword">assign</span> T_HDMI_CLK = R_HDMI_CLK;</span><br><span class="line"></span><br><span class="line"><span class="keyword">wire</span> AddCnt = (rvCnt_q &lt; <span class="number">1000</span>);</span><br><span class="line"><span class="keyword">always</span> @(<span class="keyword">posedge</span> clk_27Mhz <span class="keyword">or</span> <span class="keyword">negedge</span> rstN) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(!rstN)</span><br><span class="line">        rvCnt_q &lt;= <span class="number">10'h0</span>;</span><br><span class="line">    <span class="keyword">else</span> </span><br><span class="line">        rvCnt_q &lt;= rvCnt_d;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> @(*) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(AddCnt)</span><br><span class="line">        rvCnt_d = rvCnt_q + <span class="number">1'b1</span>;</span><br><span class="line">    <span class="keyword">else</span> </span><br><span class="line">        rvCnt_d = rvCnt_q;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">assign</span> wWrite = (rvCnt_q == <span class="number">999</span>);</span><br><span class="line"></span><br><span class="line">i2c_master </span><br><span class="line"><span class="variable">#(.IIC_SPEED(5300))</span> </span><br><span class="line">i2c_master_inst (</span><br><span class="line">    <span class="variable">.clk</span>            (clk_27Mhz),</span><br><span class="line">    <span class="variable">.rstN</span>           (rstN),</span><br><span class="line"></span><br><span class="line">    <span class="variable">.iSdaIn</span>         (T_HDMI_SDA),</span><br><span class="line">    <span class="variable">.oSdaEn</span>         (wSdaEn),</span><br><span class="line">    <span class="variable">.oSclEn</span>         (wSclEn),</span><br><span class="line">    <span class="variable">.iGo</span>            (wGo),                          <span class="comment">//state machine go (tick)</span></span><br><span class="line">    <span class="variable">.iRWn</span>           (wvI2cStream[<span class="number">16</span>]),              <span class="comment">//read or write control (tick)</span></span><br><span class="line">    <span class="variable">.ivDeviceID</span>     (wvI2cStream[<span class="number">23</span>:<span class="number">17</span>]),           <span class="comment">//Device ID</span></span><br><span class="line">    <span class="variable">.ivAddress</span>      (wvI2cStream[<span class="number">15</span>:<span class="number">8</span>]),            <span class="comment">//Address</span></span><br><span class="line">    <span class="variable">.ivSetData</span>      (wvSetData),                    <span class="comment">//set I2C data</span></span><br><span class="line">    <span class="variable">.ovGetData</span>      (),                             <span class="comment">//get I2C data</span></span><br><span class="line">    <span class="variable">.ivWriCnt</span>       (wvI2cStream[<span class="number">7</span>:<span class="number">0</span>]),             <span class="comment">//set write number</span></span><br><span class="line">    <span class="variable">.ivReaCnt</span>       (wvI2cStream[<span class="number">7</span>:<span class="number">0</span>]),             <span class="comment">//set read number</span></span><br><span class="line">    <span class="variable">.oGetDataDone</span>   (),                             <span class="comment">//get I2C data done</span></span><br><span class="line">    <span class="variable">.oSetDataReq</span>    (wSetDataReq),                  <span class="comment">//set I2C data done</span></span><br><span class="line">    <span class="variable">.oI2cIdle</span>       (wI2cIdle)</span><br><span class="line">);</span><br><span class="line"><span class="keyword">assign</span> T_HDMI_SDA = wSdaEn ? <span class="number">1'bz</span> : <span class="number">1'b0</span>;</span><br><span class="line"><span class="keyword">assign</span> T_HDMI_SCL = wSclEn ? <span class="number">1'bz</span> : <span class="number">1'b0</span>;</span><br><span class="line"></span><br><span class="line">i2c_controller_v2 i2c_controller_v2_inst (</span><br><span class="line">    <span class="variable">.clk</span>            (clk_27Mhz),</span><br><span class="line">    <span class="variable">.rstN</span>           (rstN),</span><br><span class="line"></span><br><span class="line">    <span class="variable">.iControllerGo</span>  (wWrite),</span><br><span class="line">    <span class="variable">.oGo</span>            (wGo),</span><br><span class="line">    <span class="variable">.iI2cIdle</span>       (wI2cIdle),</span><br><span class="line">    <span class="variable">.iWriteByteDone</span> (wSetDataReq),</span><br><span class="line">    <span class="variable">.ovSetData</span>      (wvSetData),</span><br><span class="line">    <span class="variable">.ovI2cStream</span>    (wvI2cStream) <span class="comment">//slave_address(7 bits), read/write(1 bit), address(1 byte), data number(1 byte)</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//sync data</span></span><br><span class="line"><span class="keyword">always</span> @(<span class="keyword">posedge</span> R_HDMI_CLK <span class="keyword">or</span> <span class="keyword">negedge</span> rstN) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(!rstN) <span class="keyword">begin</span></span><br><span class="line">        rHs_q0    &lt;= <span class="number">1'b0</span>;</span><br><span class="line">        rVs_q0    &lt;= <span class="number">1'b0</span>;</span><br><span class="line">        rDe_q0    &lt;= <span class="number">1'b0</span>;</span><br><span class="line">        rvData_q0 &lt;= <span class="number">24'h0</span>;</span><br><span class="line">        rHs_q1    &lt;= <span class="number">1'b0</span>;</span><br><span class="line">        rVs_q1    &lt;= <span class="number">1'b0</span>;</span><br><span class="line">        rDe_q1    &lt;= <span class="number">1'b0</span>;</span><br><span class="line">        rvData_q1 &lt;= <span class="number">24'h0</span>;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">begin</span></span><br><span class="line">        rHs_q0    &lt;= rHs_d0;   </span><br><span class="line">        rVs_q0    &lt;= rVs_d0;   </span><br><span class="line">        rDe_q0    &lt;= rDe_d0;   </span><br><span class="line">        rvData_q0 &lt;= rvData_d0;</span><br><span class="line">        rHs_q1    &lt;= rHs_d1;   </span><br><span class="line">        rVs_q1    &lt;= rVs_d1;   </span><br><span class="line">        rDe_q1    &lt;= rDe_d1;   </span><br><span class="line">        rvData_q1 &lt;= rvData_d1;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> @(*) <span class="keyword">begin</span></span><br><span class="line">    rHs_d0    = R_HDMI_HS;</span><br><span class="line">    rVs_d0    = R_HDMI_VS;</span><br><span class="line">    rDe_d0    = R_HDMI_DE;</span><br><span class="line">    rvData_d0 = R_DATA;</span><br><span class="line">    rHs_d1    = rHs_q0;   </span><br><span class="line">    rVs_d1    = rVs_q0;   </span><br><span class="line">    rDe_d1    = rDe_q0;   </span><br><span class="line">    rvData_d1 = rvData_q0;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">assign</span> T_HDMI_HS = rHs_q1;</span><br><span class="line"><span class="keyword">assign</span> T_HDMI_VS = rVs_q1;</span><br><span class="line"><span class="keyword">assign</span> T_HDMI_DE = rDe_q1;</span><br><span class="line"><span class="keyword">assign</span> T_DATA    = rvData_q1;</span><br><span class="line"></span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Submodule-RTL-code"><a href="#Submodule-RTL-code" class="headerlink" title="Submodule RTL code"></a>Submodule RTL code</h2><p>i2c controller主要為控制I2C master的所有行為，裡面包括寫入sil9134的初始資料。</p>
+<ul>
+<li>i2c controller sub module<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">module</span> i2c_controller_v2 (</span><br><span class="line">    <span class="keyword">input</span>            clk,</span><br><span class="line">    <span class="keyword">input</span>            rstN,</span><br><span class="line"></span><br><span class="line">    <span class="keyword">input</span>            iControllerGo,</span><br><span class="line">    <span class="keyword">output</span>           oGo,</span><br><span class="line">    <span class="keyword">input</span>            iI2cIdle,</span><br><span class="line">    <span class="keyword">input</span>            iWriteByteDone,</span><br><span class="line">    <span class="keyword">output</span> <span class="keyword">reg</span> [<span class="number">7</span>:<span class="number">0</span>] ovSetData,</span><br><span class="line">    <span class="keyword">output</span> [<span class="number">23</span>:<span class="number">0</span>]    ovI2cStream <span class="comment">//slave_address(7 bits), read/write(1 bit), address(1 byte), data number(1 byte)</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">localparam</span> READ  = <span class="number">1'b1</span>;</span><br><span class="line"><span class="keyword">localparam</span> WRITE = <span class="number">1'b0</span>;</span><br><span class="line"><span class="keyword">localparam</span> S0 = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">localparam</span> S1 = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">localparam</span> S2 = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">localparam</span> S3 = <span class="number">3</span>;</span><br><span class="line"><span class="keyword">localparam</span> S4 = <span class="number">4</span>;</span><br><span class="line"><span class="keyword">localparam</span> S5 = <span class="number">5</span>;</span><br><span class="line"><span class="keyword">localparam</span> S6 = <span class="number">6</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">reg</span> [<span class="number">6</span>:<span class="number">0</span>] rvSlaveID;</span><br><span class="line"><span class="keyword">reg</span> rRWn;</span><br><span class="line"><span class="keyword">reg</span> [<span class="number">7</span>:<span class="number">0</span>] rvAddress;</span><br><span class="line"><span class="keyword">reg</span> [<span class="number">7</span>:<span class="number">0</span>] rvCnt;</span><br><span class="line"></span><br><span class="line"><span class="keyword">reg</span> [<span class="number">2</span>:<span class="number">0</span>] nState, cState;</span><br><span class="line"><span class="keyword">reg</span> [<span class="number">7</span>:<span class="number">0</span>] rvStreamCnt_d, rvStreamCnt_q;</span><br><span class="line"><span class="keyword">wire</span> AddStreamCnt, EndStreamCnt;</span><br><span class="line"><span class="keyword">reg</span> [<span class="number">7</span>:<span class="number">0</span>] rvWriteCnt_d, rvWriteCnt_q;</span><br><span class="line"><span class="keyword">wire</span> AddWriteCnt, EndWriteCnt;</span><br><span class="line"></span><br><span class="line"><span class="keyword">wire</span> S0ToS1 = (cState == S0) &amp;&amp; iControllerGo &amp;&amp; iI2cIdle; </span><br><span class="line"><span class="keyword">wire</span> S1ToS2 = (cState == S1);</span><br><span class="line"><span class="keyword">wire</span> S2ToS3 = (cState == S2) &amp;&amp; iI2cIdle;</span><br><span class="line"><span class="keyword">wire</span> S3ToS5 = (cState == S3) &amp;&amp; EndStreamCnt;</span><br><span class="line"><span class="keyword">wire</span> S3ToS4 = (cState == S3);</span><br><span class="line"><span class="keyword">wire</span> S4ToS5 = (cState == S4);</span><br><span class="line"><span class="keyword">wire</span> S5ToS3 = (cState == S5) &amp;&amp; iI2cIdle;</span><br><span class="line"></span><br><span class="line"><span class="comment">//state macine</span></span><br><span class="line"><span class="keyword">always</span> @(<span class="keyword">posedge</span> clk <span class="keyword">or</span> <span class="keyword">negedge</span> rstN) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(!rstN)</span><br><span class="line">        cState &lt;= S0;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        cState &lt;= nState;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> @(*) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">case</span> (cState)</span><br><span class="line">        S0: nState = (S0ToS1) ? S1 : cState;</span><br><span class="line">        S1: nState = (S1ToS2) ? S2 : cState;</span><br><span class="line">        S2: nState = (S2ToS3) ? S3 : cState;</span><br><span class="line">        S3: nState = (S3ToS5) ? S6 :</span><br><span class="line">                     (S3ToS4) ? S4 : cState;</span><br><span class="line">        S4: nState = (S4ToS5) ? S5 : cState;</span><br><span class="line">        S5: nState = (S5ToS3) ? S3 : cState;</span><br><span class="line">        S6: nState = cState;</span><br><span class="line">        <span class="keyword">default</span>: nState = S0;</span><br><span class="line">    <span class="keyword">endcase</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">assign</span> oGo = (S1ToS2 || S4ToS5);</span><br><span class="line"></span><br><span class="line"><span class="comment">//counter for i2c data</span></span><br><span class="line"><span class="keyword">assign</span> AddStreamCnt = S3ToS4;</span><br><span class="line"><span class="keyword">assign</span> EndStreamCnt = AddStreamCnt &amp;&amp; (rvStreamCnt_q == <span class="number">6</span> - <span class="number">1</span>); <span class="comment">//i2c data stream unumber</span></span><br><span class="line"><span class="keyword">always</span> @(<span class="keyword">posedge</span> clk <span class="keyword">or</span> <span class="keyword">negedge</span> rstN) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(!rstN)</span><br><span class="line">        rvStreamCnt_q &lt;= <span class="number">8'h0</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        rvStreamCnt_q &lt;= rvStreamCnt_d;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> @(*) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(EndStreamCnt)</span><br><span class="line">        rvStreamCnt_d = <span class="number">8'h0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(AddStreamCnt)</span><br><span class="line">        rvStreamCnt_d = rvStreamCnt_q + <span class="number">1'b1</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        rvStreamCnt_d = rvStreamCnt_q;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//slave_address, read/write, address, data</span></span><br><span class="line"><span class="keyword">always</span> @(*) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">case</span> (rvStreamCnt_q)</span><br><span class="line">        <span class="number">0</span>: &#123;rvSlaveID, rRWn, rvAddress, rvCnt&#125; = &#123;<span class="number">7'b0111_001</span>, WRITE, <span class="number">8'h08</span>, <span class="number">8'h01</span>&#125;; </span><br><span class="line">        <span class="number">1</span>: &#123;rvSlaveID, rRWn, rvAddress, rvCnt&#125; = &#123;<span class="number">7'b0111_101</span>, WRITE, <span class="number">8'h2F</span>, <span class="number">8'h01</span>&#125;; </span><br><span class="line">        <span class="number">2</span>: &#123;rvSlaveID, rRWn, rvAddress, rvCnt&#125; = &#123;<span class="number">7'b0110_000</span>, WRITE, <span class="number">8'h05</span>, <span class="number">8'h01</span>&#125;; </span><br><span class="line">        <span class="number">3</span>: &#123;rvSlaveID, rRWn, rvAddress, rvCnt&#125; = &#123;<span class="number">7'b0110_000</span>, WRITE, <span class="number">8'h08</span>, <span class="number">8'h01</span>&#125;; </span><br><span class="line">        <span class="number">4</span>: &#123;rvSlaveID, rRWn, rvAddress, rvCnt&#125; = &#123;<span class="number">7'b0110_000</span>, WRITE, <span class="number">8'h09</span>, <span class="number">8'h01</span>&#125;; </span><br><span class="line">        <span class="number">5</span>: &#123;rvSlaveID, rRWn, rvAddress, rvCnt&#125; = &#123;<span class="number">7'b0110_000</span>, WRITE, <span class="number">8'h05</span>, <span class="number">8'h01</span>&#125;; </span><br><span class="line">        <span class="keyword">default</span> : &#123;rvSlaveID, rRWn, rvAddress, rvCnt&#125; = <span class="number">24'h0</span>;</span><br><span class="line">    <span class="keyword">endcase</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">assign</span> ovI2cStream = &#123;rvSlaveID, rRWn, rvAddress, rvCnt&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//counter for write</span></span><br><span class="line"><span class="keyword">assign</span> AddWriteCnt = iWriteByteDone;</span><br><span class="line"><span class="keyword">assign</span> EndWriteCnt = AddWriteCnt &amp;&amp; (rvWriteCnt_q == rvCnt - <span class="number">1</span>);</span><br><span class="line"><span class="keyword">always</span> @(<span class="keyword">posedge</span> clk <span class="keyword">or</span> <span class="keyword">negedge</span> rstN) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(!rstN)</span><br><span class="line">        rvWriteCnt_q &lt;= <span class="number">8'h0</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        rvWriteCnt_q &lt;= rvWriteCnt_d;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> @(*) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(EndWriteCnt)</span><br><span class="line">        rvWriteCnt_d = <span class="number">8'h0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(AddWriteCnt)</span><br><span class="line">        rvWriteCnt_d = rvWriteCnt_q + <span class="number">1'b1</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        rvWriteCnt_d = rvWriteCnt_q;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> @(*) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">case</span> (rvStreamCnt_q)</span><br><span class="line">    <span class="number">0</span>:    </span><br><span class="line">        <span class="keyword">case</span> (rvWriteCnt_q)</span><br><span class="line">            <span class="number">0</span>: ovSetData = <span class="number">8'h35</span>;</span><br><span class="line">            <span class="number">1</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">2</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">3</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">4</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">5</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">6</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">7</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="keyword">default</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">        <span class="keyword">endcase</span></span><br><span class="line">    <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">case</span> (rvWriteCnt_q)</span><br><span class="line">            <span class="number">0</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">1</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">2</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">3</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">4</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">5</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">6</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">7</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="keyword">default</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">        <span class="keyword">endcase</span></span><br><span class="line">    <span class="number">2</span>:</span><br><span class="line">        <span class="keyword">case</span> (rvWriteCnt_q)</span><br><span class="line">            <span class="number">0</span>: ovSetData = <span class="number">8'h10</span>;</span><br><span class="line">            <span class="number">1</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">2</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">3</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">4</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">5</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">6</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">7</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="keyword">default</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">        <span class="keyword">endcase</span></span><br><span class="line">    <span class="number">3</span>:</span><br><span class="line">        <span class="keyword">case</span> (rvWriteCnt_q)</span><br><span class="line">            <span class="number">0</span>: ovSetData = <span class="number">8'h05</span>;</span><br><span class="line">            <span class="number">1</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">2</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">3</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">4</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">5</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">6</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">7</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="keyword">default</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">        <span class="keyword">endcase</span></span><br><span class="line">    <span class="number">4</span>:</span><br><span class="line">        <span class="keyword">case</span> (rvWriteCnt_q)</span><br><span class="line">            <span class="number">0</span>: ovSetData = <span class="number">8'h01</span>;</span><br><span class="line">            <span class="number">1</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">2</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">3</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">4</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">5</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">6</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">7</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="keyword">default</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">        <span class="keyword">endcase</span></span><br><span class="line">    <span class="number">5</span>:</span><br><span class="line">        <span class="keyword">case</span> (rvWriteCnt_q)</span><br><span class="line">            <span class="number">0</span>: ovSetData = <span class="number">8'h04</span>;</span><br><span class="line">            <span class="number">1</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">2</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">3</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">4</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">5</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">6</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="number">7</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">            <span class="keyword">default</span>: ovSetData = <span class="number">8'h00</span>;</span><br><span class="line">        <span class="keyword">endcase</span></span><br><span class="line">    <span class="keyword">endcase</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></table></figure>
+<h2 id="實際效果"><a href="#實際效果" class="headerlink" title="實際效果"></a>實際效果</h2><blockquote class="imgur-embed-pub" lang="en" data-id="a/bSOYFBO"  ><a href="//imgur.com/a/bSOYFBO" target="_blank" rel="noopener">FPGA - HDMI LOOP</a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ALINX/" rel="tag"># ALINX</a>
+          
+            <a href="/tags/HDMI/" rel="tag"># HDMI</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/05/%E8%A8%88%E6%95%B8%E5%99%A8%E8%A8%AD%E8%A8%88/" rel="next" title="計數器設計">
+                <i class="fa fa-chevron-left"></i> 計數器設計
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Tien Yao" />
+            
+              <p class="site-author-name" itemprop="name">Tien Yao</p>
+              <p class="site-description motion-element" itemprop="description">燃燒 coding 魂</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">文章</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分類</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">標籤</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:hsutienyao@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.youtube.com/watch?v=mU3sdp6XxcE&list=PLLYBmbTzkePEGV2iUvuCgX6QJZTZ_KcWv" target="_blank" title="YouTube">
+                      
+                        <i class="fa fa-fw fa-youtube"></i>YouTube</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#HDMI-LOOP"><span class="nav-number">1.</span> <span class="nav-text">HDMI LOOP</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#TOP層RTL-code"><span class="nav-number">1.1.</span> <span class="nav-text">TOP層RTL code</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Submodule-RTL-code"><span class="nav-number">1.2.</span> <span class="nav-text">Submodule RTL code</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#實際效果"><span class="nav-number">1.3.</span> <span class="nav-text">實際效果</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  #<span class="with-love">
+  <span class="with-love" id="heart">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tien Yao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 強力驅動</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主題 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/src/exturl.js?v=5.1.4"></script>
+
+
+</body>
+</html>

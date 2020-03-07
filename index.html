@@ -251,6 +251,153 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/07/HDMI-LOOP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tien Yao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TY的學習筆記">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/03/07/HDMI-LOOP/" itemprop="url">HDMI_LOOP</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2020-03-07T17:50:02+08:00">
+                2020-03-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA/" itemprop="url" rel="index">
+                    <span itemprop="name">FPGA</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="HDMI-LOOP"><a href="#HDMI-LOOP" class="headerlink" title="HDMI LOOP"></a>HDMI LOOP</h1><p>HDMI LOOP為使用Sil9013作為接收端，sil9134作為輸出端，中間經過FPGA但不處理任何訊號只敲一級clock後輸出訊號。<br>FPGA一開始會經I2C對sil9134作初始化的動作，架構如下所示</p>
+<blockquote class="imgur-embed-pub" lang="en" data-id="a/SkPZ7d2"><a href="//imgur.com/a/SkPZ7d2" target="_blank" rel="noopener">FPGA HDMI LOOP</a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/03/07/HDMI-LOOP/#more" rel="contents">
+              閱讀全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/05/%E8%A8%88%E6%95%B8%E5%99%A8%E8%A8%AD%E8%A8%88/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -886,7 +1033,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">文章</span>
                 </a>
               </div>
@@ -908,7 +1055,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">標籤</span>
                 </a>
               </div>
@@ -918,6 +1065,22 @@
 
           
 
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:hsutienyao@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.youtube.com/watch?v=mU3sdp6XxcE&list=PLLYBmbTzkePEGV2iUvuCgX6QJZTZ_KcWv" target="_blank" title="YouTube">
+                      
+                        <i class="fa fa-fw fa-youtube"></i>YouTube</a>
+                  </span>
+                
+            </div>
           
 
           
@@ -946,8 +1109,9 @@
     <footer id="footer" class="footer">
       <div class="footer-inner">
         <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
+  #<span class="with-love">
+  <span class="with-love" id="heart">
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Tien Yao</span>
 
@@ -1012,6 +1176,8 @@
   
 
 
+  
+
 
 
 
@@ -1050,6 +1216,11 @@
   
   
     <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
   
 
 
