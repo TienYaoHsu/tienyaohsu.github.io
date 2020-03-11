@@ -251,6 +251,158 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/11/Color-bar%E5%8F%8A%E7%99%BD%E6%A1%86%E9%A1%AF%E7%A4%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tien Yao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TY的學習筆記">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/03/11/Color-bar%E5%8F%8A%E7%99%BD%E6%A1%86%E9%A1%AF%E7%A4%BA/" itemprop="url">Color_bar及白框顯示</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2020-03-11T13:47:59+08:00">
+                2020-03-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA/" itemprop="url" rel="index">
+                    <span itemprop="name">FPGA</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="相關知識"><a href="#相關知識" class="headerlink" title="相關知識"></a>相關知識</h2><p>這次使用FPGA透過DHMI點一個color bar 及白框。<br>參考<code>VESA Display Monitor Timing Standard</code> 以 1920x1080@60 Hz為例給出的front porch, back porch, sync pulse 如下</p>
+<blockquote class="imgur-embed-pub" lang="en" data-id="a/tnjpal9"  ><a href="//imgur.com/a/tnjpal9" target="_blank" rel="noopener">FPGA - 1920 x 1080 @ 60 Hz parameter</a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+
+<p>pixel clock 由上圖可以得知為 148.5MHz，這樣我們可以算出pixel clock為 </p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(hor_pixels + hor_sync_pulse + hor_front_porch + hor_back_porch) x </span><br><span class="line">(ver_pixels + ver_sync_pulse + ver_front_porch + ver_back_porch) x </span><br><span class="line">ver_frequency</span><br></pre></td></tr></table></figure>
+
+<p>pixel colck : (1920 + 44 + 88 + 148) x (1080 + 5 + 4 + 36) x 60 = 148,500,000</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/03/11/Color-bar%E5%8F%8A%E7%99%BD%E6%A1%86%E9%A1%AF%E7%A4%BA/#more" rel="contents">
+              閱讀全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/07/HDMI-LOOP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1033,7 +1185,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">文章</span>
                 </a>
               </div>
@@ -1055,7 +1207,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">標籤</span>
                 </a>
               </div>
@@ -1367,7 +1519,7 @@
       else if (!isArchive && !isCategory && !isTag) { //is index page
         var titles = [] //array to titles
 
-        var postsstr = 'titles.push("HDMI_LOOP");titles.push("計數器設計");titles.push("generate 用法");titles.push("ARTY_A7_開發板");titles.push("Verilog HDL 訊號命名原則");' //if you have a better way to get titles of posts, please change it
+        var postsstr = 'titles.push("Color_bar及白框顯示");titles.push("HDMI_LOOP");titles.push("計數器設計");titles.push("generate 用法");titles.push("ARTY_A7_開發板");titles.push("Verilog HDL 訊號命名原則");' //if you have a better way to get titles of posts, please change it
         eval(postsstr)
 
         var promises = titles.map(function (title) {

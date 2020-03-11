@@ -81,13 +81,11 @@
 
 <meta name="description" content="燃燒 coding 魂">
 <meta property="og:type" content="website">
-<meta property="og:title" content="categories">
-<meta property="og:url" content="http://yoursite.com/categories/index.html">
+<meta property="og:title" content="TY的學習筆記">
+<meta property="og:url" content="http://yoursite.com/tags/color-bar/index.html">
 <meta property="og:site_name" content="TY的學習筆記">
 <meta property="og:description" content="燃燒 coding 魂">
 <meta property="og:locale" content="zh_TW">
-<meta property="article:published_time" content="2020-03-04T08:42:18.000Z">
-<meta property="article:modified_time" content="2020-03-05T03:37:17.166Z">
 <meta property="article:author" content="Tien Yao">
 <meta name="twitter:card" content="summary">
 
@@ -119,13 +117,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/categories/"/>
+  <link rel="canonical" href="http://yoursite.com/tags/color-bar/"/>
 
 
 
 
 
-  <title>categories | TY的學習筆記</title>
+  <title>標籤: color bar | TY的學習筆記</title>
   
 
 
@@ -144,7 +142,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-left ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -238,54 +236,61 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-expand">
-    
-    
-    
-    <div class="post-block page">
-      <header class="post-header">
+  
+  
+  
+  <div class="post-block tag">
 
-	<h1 class="post-title" itemprop="name headline">categories</h1>
-
-
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
-        
-        
-          <div class="category-all-page">
-            <div class="category-all-title">
-                目前共計 2 個分類
-            </div>
-            <div class="category-all">
-              <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/FPGA/">FPGA</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Verilog/">Verilog</a><span class="category-list-count">3</span></li></ul>
-            </div>
-          </div>
-        
+    <div id="posts" class="posts-collapse">
+      <div class="collection-title">
+        <h1>color bar<small>標籤</small>
+        </h1>
       </div>
+
       
-      
+        
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h2 class="post-title">
+        
+            <a class="post-title-link" href="/2020/03/11/Color-bar%E5%8F%8A%E7%99%BD%E6%A1%86%E9%A1%AF%E7%A4%BA/" itemprop="url">
+              
+                <span itemprop="name">Color_bar及白框顯示</span>
+              
+            </a>
+        
+      </h2>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2020-03-11T13:47:59+08:00"
+              content="2020-03-11" >
+          03-11
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
       
     </div>
-    
-    
-    
+
   </div>
-
-
-          </div>
-          
-
-
-          
+  
+  
+  
 
   
 
 
+          </div>
+          
+
+
+          
 
         </div>
         
@@ -532,10 +537,6 @@
   
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
-
-
 
   
 
@@ -652,13 +653,13 @@
       var articles = db.collection('articles')
 
       //https://hexo.io/zh-tw/docs/variables.html
-      var isPost = 'categories'.length > 0
+      var isPost = ''.length > 0
       var isArchive = '' === 'true'
       var isCategory = ''.length > 0
       var isTag = ''.length > 0
 
       if (isPost) { //is article page
-        var title = 'categories'
+        var title = ''
         var doc = articles.doc(title)
 
         getCount(doc, true).then(appendCountTo($('.post-meta')))
@@ -666,7 +667,7 @@
       else if (!isArchive && !isCategory && !isTag) { //is index page
         var titles = [] //array to titles
 
-        var postsstr = '' //if you have a better way to get titles of posts, please change it
+        var postsstr = 'titles.push("Color_bar及白框顯示");' //if you have a better way to get titles of posts, please change it
         eval(postsstr)
 
         var promises = titles.map(function (title) {

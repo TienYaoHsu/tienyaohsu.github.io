@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-tw">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ARTY_A7,color bar,white frame," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="相關知識這次使用FPGA透過DHMI點一個color bar 及白框。參考VESA Display Monitor Timing Standard 以 1920x1080@60 Hz為例給出的front porch, back porch, sync pulse 如下 FPGA - 1920 x 1080 @ 60 Hz parameter  pixel clock 由上圖可以得知為 148.5M">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Color_bar及白框顯示">
+<meta property="og:url" content="http://yoursite.com/2020/03/11/Color-bar%E5%8F%8A%E7%99%BD%E6%A1%86%E9%A1%AF%E7%A4%BA/index.html">
+<meta property="og:site_name" content="TY的學習筆記">
+<meta property="og:description" content="相關知識這次使用FPGA透過DHMI點一個color bar 及白框。參考VESA Display Monitor Timing Standard 以 1920x1080@60 Hz為例給出的front porch, back porch, sync pulse 如下 FPGA - 1920 x 1080 @ 60 Hz parameter  pixel clock 由上圖可以得知為 148.5M">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2020-03-11T05:47:59.000Z">
+<meta property="article:modified_time" content="2020-03-11T05:59:17.559Z">
+<meta property="article:author" content="Tien Yao">
+<meta property="article:tag" content="ARTY_A7">
+<meta property="article:tag" content="color bar">
+<meta property="article:tag" content="white frame">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/03/11/Color-bar及白框顯示/"/>
+
+
+
+
+
+  <title>Color_bar及白框顯示 | TY的學習筆記</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-tw">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">TY的學習筆記</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            about
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/11/Color-bar%E5%8F%8A%E7%99%BD%E6%A1%86%E9%A1%AF%E7%A4%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tien Yao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="TY的學習筆記">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Color_bar及白框顯示</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2020-03-11T13:47:59+08:00">
+                2020-03-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FPGA/" itemprop="url" rel="index">
+                    <span itemprop="name">FPGA</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="相關知識"><a href="#相關知識" class="headerlink" title="相關知識"></a>相關知識</h2><p>這次使用FPGA透過DHMI點一個color bar 及白框。<br>參考<code>VESA Display Monitor Timing Standard</code> 以 1920x1080@60 Hz為例給出的front porch, back porch, sync pulse 如下</p>
+<blockquote class="imgur-embed-pub" lang="en" data-id="a/tnjpal9"  ><a href="//imgur.com/a/tnjpal9" target="_blank" rel="noopener">FPGA - 1920 x 1080 @ 60 Hz parameter</a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+
+<p>pixel clock 由上圖可以得知為 148.5MHz，這樣我們可以算出pixel clock為 </p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(hor_pixels + hor_sync_pulse + hor_front_porch + hor_back_porch) x </span><br><span class="line">(ver_pixels + ver_sync_pulse + ver_front_porch + ver_back_porch) x </span><br><span class="line">ver_frequency</span><br></pre></td></tr></table></figure>
+
+<p>pixel colck : (1920 + 44 + 88 + 148) x (1080 + 5 + 4 + 36) x 60 = 148,500,000</p>
+<a id="more"></a>
+
+<p>我們觀察下圖得知等各個參間的關係<br>H水平方向來看front porch, sync pulse, back porch, left border, right border, addressable video(AA)為一條line的時間<br>V垂直方向來看front porch, sync pulse, back porch, top border, bottom border, addressable video(AA)為一個frame的時間<br>但圖中多了left/right border 及 tom/bottom border都是0</p>
+<blockquote class="imgur-embed-pub" lang="en" data-id="a/gUtWi6Y"  ><a href="//imgur.com/a/gUtWi6Y" target="_blank" rel="noopener">FPGA - HV timing</a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+
+
+<h2 id="時序訊號控制"><a href="#時序訊號控制" class="headerlink" title="時序訊號控制"></a>時序訊號控制</h2><p>有了以上的參數後便可以寫RTL，設計構思是先把H水平方向相關訊號先寫出來，接著寫V垂直方向訊號。<br>而我們把重要訊號參數化，這樣日後可以移植不同解析度。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">parameter H_SYNC_PULSE  = 44,</span><br><span class="line">parameter H_FRONT_PORCH = 88,</span><br><span class="line">parameter H_BACK_PORCH  = 148,</span><br><span class="line">parameter H_ACTIVE      = 1920,</span><br><span class="line">parameter V_SYNC_PULSE  = 5,</span><br><span class="line">parameter V_FRONT_PORCH = 4,</span><br><span class="line">parameter V_BACK_PORCH  = 36,</span><br><span class="line">parameter V_ACTIVE      = 1080</span><br></pre></td></tr></table></figure>
+<ul>
+<li>timing.v<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">////// ... . .. --.. .   - .... .   -- --- -- . -. - ////// 									  																								  																			</span></span><br><span class="line"><span class="comment">// Author              : TienYao			  																</span></span><br><span class="line"><span class="comment">// Source Code Name	   : timing.v					  																				</span></span><br><span class="line"><span class="comment">// Function Description:  														 </span></span><br><span class="line"><span class="comment">// ===========================================================</span></span><br><span class="line"><span class="keyword">module</span> timing #(</span><br><span class="line"><span class="keyword">parameter</span> H_SYNC_PULSE  = <span class="number">44</span>,</span><br><span class="line"><span class="keyword">parameter</span> H_FRONT_PORCH = <span class="number">88</span>,</span><br><span class="line"><span class="keyword">parameter</span> H_BACK_PORCH  = <span class="number">148</span>,</span><br><span class="line"><span class="keyword">parameter</span> H_ACTIVE      = <span class="number">1920</span>,</span><br><span class="line"><span class="keyword">parameter</span> V_SYNC_PULSE  = <span class="number">5</span>,</span><br><span class="line"><span class="keyword">parameter</span> V_FRONT_PORCH = <span class="number">4</span>,</span><br><span class="line"><span class="keyword">parameter</span> V_BACK_PORCH  = <span class="number">36</span>,</span><br><span class="line"><span class="keyword">parameter</span> V_ACTIVE      = <span class="number">1080</span></span><br><span class="line">) (</span><br><span class="line">    <span class="keyword">input</span> clk, <span class="comment">//pixel clock</span></span><br><span class="line">    <span class="keyword">input</span> rstN,</span><br><span class="line"></span><br><span class="line">    <span class="keyword">output</span> oHSync,</span><br><span class="line">    <span class="keyword">output</span> oVSync,</span><br><span class="line">    <span class="keyword">output</span> oActiveArea,</span><br><span class="line">    <span class="keyword">output</span> [<span class="number">15</span>:<span class="number">0</span>] ovHCount,</span><br><span class="line">    <span class="keyword">output</span> [<span class="number">15</span>:<span class="number">0</span>] ovVCount</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">reg</span> [<span class="number">15</span>:<span class="number">0</span>] rvHCount_d, rvHCount_q;</span><br><span class="line"><span class="keyword">reg</span> [<span class="number">15</span>:<span class="number">0</span>] rvVCount_d, rvVCount_q;</span><br><span class="line"><span class="keyword">wire</span> AddHCount, EndHCount;</span><br><span class="line"><span class="keyword">wire</span> AddVCount, EndVCount;</span><br><span class="line"></span><br><span class="line"><span class="keyword">assign</span> AddHCount = <span class="number">1'b1</span>;</span><br><span class="line"><span class="keyword">assign</span> EndHCount = AddHCount &amp;&amp; (rvHCount_q == H_SYNC_PULSE + H_FRONT_PORCH + H_BACK_PORCH + H_ACTIVE - <span class="number">1</span>);</span><br><span class="line"><span class="keyword">always</span> @(<span class="keyword">posedge</span> clk <span class="keyword">or</span> <span class="keyword">negedge</span> rstN) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(!rstN)</span><br><span class="line">        rvHCount_q &lt;= <span class="number">16'h0</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        rvHCount_q &lt;= rvHCount_d;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> @(*) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(EndHCount)</span><br><span class="line">        rvHCount_d = <span class="number">16'h0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(AddHCount)</span><br><span class="line">        rvHCount_d = rvHCount_q + <span class="number">1'b1</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        rvHCount_d = rvHCount_q;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">assign</span> ovHCount = rvHCount_q;</span><br><span class="line"><span class="keyword">assign</span> oHSync = (rvHCount_q &gt; H_FRONT_PORCH - <span class="number">1</span>) &amp;&amp; (rvHCount_q &lt;= (H_FRONT_PORCH + H_SYNC_PULSE - <span class="number">1</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">assign</span> AddVCount = EndHCount;</span><br><span class="line"><span class="keyword">assign</span> EndVCount = AddVCount &amp;&amp; (rvVCount_q == V_SYNC_PULSE + V_FRONT_PORCH + V_BACK_PORCH + V_ACTIVE - <span class="number">1</span>);</span><br><span class="line"><span class="keyword">always</span> @(<span class="keyword">posedge</span> clk <span class="keyword">or</span> <span class="keyword">negedge</span> rstN) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(!rstN)</span><br><span class="line">        rvVCount_q &lt;= <span class="number">16'h0</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        rvVCount_q &lt;= rvVCount_d;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> @(*) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(EndVCount)</span><br><span class="line">        rvVCount_d = <span class="number">16'h0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(AddVCount)</span><br><span class="line">        rvVCount_d = rvVCount_q + <span class="number">1'b1</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        rvVCount_d = rvVCount_q;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">assign</span> ovVCount = rvVCount_q;</span><br><span class="line"><span class="keyword">assign</span> oVSync = (rvVCount_q &gt; V_FRONT_PORCH - <span class="number">1</span> ) &amp;&amp; (rvVCount_q &lt;= (V_FRONT_PORCH + V_SYNC_PULSE - <span class="number">1</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">assign</span> oActiveArea = (rvHCount_q &gt; (H_FRONT_PORCH + H_SYNC_PULSE + H_BACK_PORCH - <span class="number">1</span>)) &amp;&amp; (rvHCount_q &lt;= (H_FRONT_PORCH + H_SYNC_PULSE + H_BACK_PORCH + H_ACTIVE - <span class="number">1</span>) &amp;&amp;</span><br><span class="line">                      rvVCount_q &gt; (V_FRONT_PORCH + V_SYNC_PULSE + V_BACK_PORCH - <span class="number">1</span>)) &amp;&amp; (rvVCount_q &lt;= (V_FRONT_PORCH + V_SYNC_PULSE + V_BACK_PORCH + V_ACTIVE - <span class="number">1</span>));</span><br></pre></td></tr></table></figure></li>
+<li>模擬如下圖<blockquote class="imgur-embed-pub" lang="en" data-id="a/yfjDMtN"  ><a href="//imgur.com/a/yfjDMtN" target="_blank" rel="noopener">FPGA - HV sim</a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+
+</li>
+</ul>
+<h2 id="資料輸出"><a href="#資料輸出" class="headerlink" title="資料輸出"></a>資料輸出</h2><p>有了以上的控制訊號，接著考慮如何把RGB訊號放到active area(AA)上。<br>我們要產生垂直的color bar共有八種色彩而垂直有1080條line所以間隔135就要變換一次色彩<br><code>ivVCount &lt;= 16&#39;d134 + V_SYNC_PULSE + V_FRONT_PORCH + V_BACK_PORCH</code></p>
+<p>為了測試資料能否準確放在(AA)上，我們可以設計一個白框，只顯示最上/最下/最左/最右的地方。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(ivVCount == V_SYNC_PULSE + V_FRONT_PORCH + V_BACK_PORCH) || (ivVCount == 16<span class="string">'d1079 + V_SYNC_PULSE + V_FRONT_PORCH + V_BACK_PORCH) || </span></span><br><span class="line"><span class="string">(ivHCount == H_SYNC_PULSE + H_FRONT_PORCH + H_BACK_PORCH) || (ivHCount == 16'</span>d1919 + H_SYNC_PULSE + H_FRONT_PORCH + H_BACK_PORCH)</span><br></pre></td></tr></table></figure>
+
+<p>而sync的目地是因為當使用<code>iActiveArea</code>來作為丟RGB資料的開關後敲一級clock，為了能讓所有訊號能夠對齊所以hsync, vsync, ActiveArea也需敲一級clock。</p>
+<ul>
+<li>data.v<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">`<span class="meta-keyword">timescale</span> 1ns/100ps  </span></span><br><span class="line"><span class="comment">////// ... . .. --.. .   - .... .   -- --- -- . -. - ////// 									  																								  																			</span></span><br><span class="line"><span class="comment">// Author              : TienYao			  																</span></span><br><span class="line"><span class="comment">// Source Code Name	   : data.v					  																				</span></span><br><span class="line"><span class="comment">// Function Description:  														 </span></span><br><span class="line"><span class="comment">// ===========================================================</span></span><br><span class="line"><span class="keyword">module</span> data #(</span><br><span class="line"><span class="keyword">parameter</span> H_SYNC_PULSE  = <span class="number">44</span>,</span><br><span class="line"><span class="keyword">parameter</span> H_FRONT_PORCH = <span class="number">88</span>,</span><br><span class="line"><span class="keyword">parameter</span> H_BACK_PORCH  = <span class="number">148</span>,</span><br><span class="line"><span class="keyword">parameter</span> V_SYNC_PULSE  = <span class="number">5</span>,</span><br><span class="line"><span class="keyword">parameter</span> V_FRONT_PORCH = <span class="number">4</span>,</span><br><span class="line"><span class="keyword">parameter</span> V_BACK_PORCH  = <span class="number">36</span></span><br><span class="line">)</span><br><span class="line">(</span><br><span class="line">    <span class="keyword">input</span> clk, <span class="comment">//pixel clock</span></span><br><span class="line">    <span class="keyword">input</span> rstN,</span><br><span class="line"></span><br><span class="line">    <span class="keyword">input</span> iHSync,</span><br><span class="line">    <span class="keyword">input</span> iVSync,</span><br><span class="line">    <span class="keyword">input</span> iActiveArea,</span><br><span class="line">    <span class="keyword">input</span> [<span class="number">15</span>:<span class="number">0</span>] ivHCount,</span><br><span class="line">    <span class="keyword">input</span> [<span class="number">15</span>:<span class="number">0</span>] ivVCount,</span><br><span class="line"></span><br><span class="line">    <span class="keyword">output</span> oHSync,</span><br><span class="line">    <span class="keyword">output</span> oVSync,</span><br><span class="line">    <span class="keyword">output</span> oActiveArea,</span><br><span class="line">    <span class="keyword">output</span> [<span class="number">7</span>:<span class="number">0</span>] ovRData,</span><br><span class="line">    <span class="keyword">output</span> [<span class="number">7</span>:<span class="number">0</span>] ovGData,</span><br><span class="line">    <span class="keyword">output</span> [<span class="number">7</span>:<span class="number">0</span>] ovBData </span><br><span class="line">);</span><br><span class="line"><span class="keyword">reg</span> rHSync_d, rHSync_q;</span><br><span class="line"><span class="keyword">reg</span> rVSync_d, rVSync_q;</span><br><span class="line"><span class="keyword">reg</span> rActiveArea_d, rActiveArea_q;</span><br><span class="line"><span class="keyword">reg</span> [<span class="number">7</span>:<span class="number">0</span>] rvRData_d, rvRData_q;</span><br><span class="line"><span class="keyword">reg</span> [<span class="number">7</span>:<span class="number">0</span>] rvGData_d, rvGData_q;</span><br><span class="line"><span class="keyword">reg</span> [<span class="number">7</span>:<span class="number">0</span>] rvBData_d, rvBData_q;</span><br><span class="line"></span><br><span class="line"><span class="comment">///* V color bar</span></span><br><span class="line"><span class="keyword">always</span> @(<span class="keyword">posedge</span> clk <span class="keyword">or</span> <span class="keyword">negedge</span> rstN) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(!rstN) <span class="keyword">begin</span></span><br><span class="line">        rvRData_q &lt;= <span class="number">8'h00</span>;</span><br><span class="line">        rvGData_q &lt;= <span class="number">8'h00</span>;</span><br><span class="line">        rvBData_q &lt;= <span class="number">8'h00</span>;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">begin</span></span><br><span class="line">        rvRData_q &lt;= rvRData_d; </span><br><span class="line">        rvGData_q &lt;= rvGData_d; </span><br><span class="line">        rvBData_q &lt;= rvBData_d; </span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> @(*) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(iActiveArea) <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">if</span>(ivVCount &lt;= <span class="number">16'd134</span> + V_SYNC_PULSE + V_FRONT_PORCH + V_BACK_PORCH) <span class="keyword">begin</span></span><br><span class="line">            rvRData_d = <span class="number">8'hFF</span>;</span><br><span class="line">            rvGData_d = <span class="number">8'h00</span>;</span><br><span class="line">            rvBData_d = <span class="number">8'h00</span>;</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(ivVCount &lt;= <span class="number">16'd269</span> + V_SYNC_PULSE + V_FRONT_PORCH + V_BACK_PORCH) <span class="keyword">begin</span></span><br><span class="line">            rvRData_d = <span class="number">8'h00</span>;</span><br><span class="line">            rvGData_d = <span class="number">8'hFF</span>;</span><br><span class="line">            rvBData_d = <span class="number">8'h00</span>;            </span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(ivVCount &lt;= <span class="number">16'd404</span> + V_SYNC_PULSE + V_FRONT_PORCH + V_BACK_PORCH) <span class="keyword">begin</span></span><br><span class="line">            rvRData_d = <span class="number">8'h00</span>;</span><br><span class="line">            rvGData_d = <span class="number">8'h00</span>;</span><br><span class="line">            rvBData_d = <span class="number">8'hFF</span>;            </span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(ivVCount &lt;= <span class="number">16'd539</span> + V_SYNC_PULSE + V_FRONT_PORCH + V_BACK_PORCH) <span class="keyword">begin</span></span><br><span class="line">            rvRData_d = <span class="number">8'hFF</span>;</span><br><span class="line">            rvGData_d = <span class="number">8'hFF</span>;</span><br><span class="line">            rvBData_d = <span class="number">8'h00</span>;            </span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(ivVCount &lt;= <span class="number">16'd674</span> + V_SYNC_PULSE + V_FRONT_PORCH + V_BACK_PORCH) <span class="keyword">begin</span></span><br><span class="line">            rvRData_d = <span class="number">8'h00</span>;</span><br><span class="line">            rvGData_d = <span class="number">8'hFF</span>;</span><br><span class="line">            rvBData_d = <span class="number">8'hFF</span>;            </span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(ivVCount &lt;= <span class="number">16'd809</span> + V_SYNC_PULSE + V_FRONT_PORCH + V_BACK_PORCH) <span class="keyword">begin</span></span><br><span class="line">            rvRData_d = <span class="number">8'hFF</span>;</span><br><span class="line">            rvGData_d = <span class="number">8'h00</span>;</span><br><span class="line">            rvBData_d = <span class="number">8'hFF</span>;            </span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(ivVCount &lt;= <span class="number">16'd944</span> + V_SYNC_PULSE + V_FRONT_PORCH + V_BACK_PORCH) <span class="keyword">begin</span></span><br><span class="line">            rvRData_d = <span class="number">8'h00</span>;</span><br><span class="line">            rvGData_d = <span class="number">8'h00</span>;</span><br><span class="line">            rvBData_d = <span class="number">8'h00</span>;           </span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">begin</span></span><br><span class="line">            rvRData_d = <span class="number">8'hFF</span>;</span><br><span class="line">            rvGData_d = <span class="number">8'hFF</span>;</span><br><span class="line">            rvBData_d = <span class="number">8'hFF</span>;            </span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">begin</span></span><br><span class="line">        rvRData_d = <span class="number">8'h00</span>;</span><br><span class="line">        rvGData_d = <span class="number">8'h00</span>;</span><br><span class="line">        rvBData_d = <span class="number">8'h00</span>;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">assign</span> ovRData = rvRData_q;</span><br><span class="line"><span class="keyword">assign</span> ovGData = rvGData_q;</span><br><span class="line"><span class="keyword">assign</span> ovBData = rvBData_q;</span><br><span class="line"><span class="comment">//*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">always @(posedge clk or negedge rstN) begin</span></span><br><span class="line"><span class="comment">    if(!rstN) begin</span></span><br><span class="line"><span class="comment">        rvRData_q &lt;= 8'h00;</span></span><br><span class="line"><span class="comment">        rvGData_q &lt;= 8'h00;</span></span><br><span class="line"><span class="comment">        rvBData_q &lt;= 8'h00;</span></span><br><span class="line"><span class="comment">    end</span></span><br><span class="line"><span class="comment">    else begin</span></span><br><span class="line"><span class="comment">        rvRData_q &lt;= rvRData_d; </span></span><br><span class="line"><span class="comment">        rvGData_q &lt;= rvGData_d; </span></span><br><span class="line"><span class="comment">        rvBData_q &lt;= rvBData_d; </span></span><br><span class="line"><span class="comment">    end</span></span><br><span class="line"><span class="comment">end</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">always @(*) begin</span></span><br><span class="line"><span class="comment">    if(iActiveArea) begin</span></span><br><span class="line"><span class="comment">        if((ivVCount == V_SYNC_PULSE + V_FRONT_PORCH + V_BACK_PORCH) || (ivVCount == 16'd1079 + V_SYNC_PULSE + V_FRONT_PORCH + V_BACK_PORCH) || </span></span><br><span class="line"><span class="comment">           (ivHCount == H_SYNC_PULSE + H_FRONT_PORCH + H_BACK_PORCH) || (ivHCount == 16'd1919 + H_SYNC_PULSE + H_FRONT_PORCH + H_BACK_PORCH)) begin</span></span><br><span class="line"><span class="comment">            rvRData_d = 8'hFF;</span></span><br><span class="line"><span class="comment">            rvGData_d = 8'hFF;</span></span><br><span class="line"><span class="comment">            rvBData_d = 8'hFF;</span></span><br><span class="line"><span class="comment">        end</span></span><br><span class="line"><span class="comment">        else begin</span></span><br><span class="line"><span class="comment">            rvRData_d = 8'h00;</span></span><br><span class="line"><span class="comment">            rvGData_d = 8'h00;</span></span><br><span class="line"><span class="comment">            rvBData_d = 8'h00;</span></span><br><span class="line"><span class="comment">        end</span></span><br><span class="line"><span class="comment">    end</span></span><br><span class="line"><span class="comment">    else begin</span></span><br><span class="line"><span class="comment">        rvRData_d = 8'h00;</span></span><br><span class="line"><span class="comment">        rvGData_d = 8'h00;</span></span><br><span class="line"><span class="comment">        rvBData_d = 8'h00;</span></span><br><span class="line"><span class="comment">    end    </span></span><br><span class="line"><span class="comment">end</span></span><br><span class="line"><span class="comment">assign ovRData = rvRData_q;</span></span><br><span class="line"><span class="comment">assign ovGData = rvGData_q;</span></span><br><span class="line"><span class="comment">assign ovBData = rvBData_q;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">//sync </span></span><br><span class="line"><span class="keyword">always</span> @(<span class="keyword">posedge</span> clk <span class="keyword">or</span> <span class="keyword">negedge</span> rstN) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(!rstN) <span class="keyword">begin</span></span><br><span class="line">        rHSync_q      &lt;= <span class="number">1'b0</span>;</span><br><span class="line">        rVSync_q      &lt;= <span class="number">1'b0</span>;</span><br><span class="line">        rActiveArea_q &lt;= <span class="number">1'b0</span>;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">begin</span></span><br><span class="line">        rHSync_q      &lt;= rHSync_d;    </span><br><span class="line">        rVSync_q      &lt;= rVSync_d;     </span><br><span class="line">        rActiveArea_q &lt;= rActiveArea_d;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> @(*) <span class="keyword">begin</span></span><br><span class="line">        rHSync_d      = iHSync;    </span><br><span class="line">        rVSync_d      = iVSync;     </span><br><span class="line">        rActiveArea_d = iActiveArea;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">assign</span> oHSync      = rHSync_q;     </span><br><span class="line"><span class="keyword">assign</span> oVSync      = rVSync_q;     </span><br><span class="line"><span class="keyword">assign</span> oActiveArea = rActiveArea_q;</span><br><span class="line"></span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="TOP層"><a href="#TOP層" class="headerlink" title="TOP層"></a>TOP層</h2><p>因為FPGA輸入為differential clock，所以我們使用Clocking Wizard把differential clock轉為我們可用的訊號，<br>我們需要148.5MHz pixel clock及I2C要使用的27MHz，需要等clock穩定後才讓我們的子模組能夠使用，locked的訊號就當作reset。</p>
+<ul>
+<li>COLOR_BAR_TOP.v</li>
+</ul>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">`<span class="meta-keyword">timescale</span> 1ns/100ps  </span></span><br><span class="line"><span class="comment">////// ... . .. --.. .   - .... .   -- --- -- . -. - ////// 									  																								  																			</span></span><br><span class="line"><span class="comment">// Author              : TienYao			  																</span></span><br><span class="line"><span class="comment">// Source Code Name	   : COLOR_BAR_TOP.v					  																				</span></span><br><span class="line"><span class="comment">// Function Description:  														 </span></span><br><span class="line"><span class="comment">// ===========================================================</span></span><br><span class="line"><span class="keyword">module</span> COLOR_BAR_TOP (</span><br><span class="line"><span class="keyword">input</span> CLK_P,</span><br><span class="line"><span class="keyword">input</span> CLK_N,   </span><br><span class="line">  </span><br><span class="line"><span class="keyword">input</span> RESET_N,</span><br><span class="line"> </span><br><span class="line"><span class="keyword">inout</span> HDMI_SCL,</span><br><span class="line"><span class="keyword">inout</span> HDMI_SDA,</span><br><span class="line"><span class="keyword">output</span> HDMI_RESET_N,</span><br><span class="line"><span class="keyword">output</span> HDMI_CLK,</span><br><span class="line"><span class="keyword">output</span> HDMI_HS,</span><br><span class="line"><span class="keyword">output</span> HDMI_VS,</span><br><span class="line"><span class="keyword">output</span> HDMI_DE,</span><br><span class="line"><span class="keyword">output</span> [<span class="number">7</span>:<span class="number">0</span>] HDMI_R_DATA,</span><br><span class="line"><span class="keyword">output</span> [<span class="number">7</span>:<span class="number">0</span>] HDMI_G_DATA,</span><br><span class="line"><span class="keyword">output</span> [<span class="number">7</span>:<span class="number">0</span>] HDMI_B_DATA</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">localparam</span> H_SYNC_PULSE  = <span class="number">44</span>;</span><br><span class="line"><span class="keyword">localparam</span> H_FRONT_PORCH = <span class="number">88</span>;</span><br><span class="line"><span class="keyword">localparam</span> H_BACK_PORCH  = <span class="number">148</span>;</span><br><span class="line"><span class="keyword">localparam</span> H_ACTIVE      = <span class="number">1920</span>;</span><br><span class="line"><span class="keyword">localparam</span> V_SYNC_PULSE  = <span class="number">5</span>;</span><br><span class="line"><span class="keyword">localparam</span> V_FRONT_PORCH = <span class="number">4</span>;</span><br><span class="line"><span class="keyword">localparam</span> V_BACK_PORCH  = <span class="number">36</span>;</span><br><span class="line"><span class="keyword">localparam</span> V_ACTIVE      = <span class="number">1080</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">wire</span> wHSync;     </span><br><span class="line"><span class="keyword">wire</span> wVSync;     </span><br><span class="line"><span class="keyword">wire</span> wActiveArea;</span><br><span class="line"><span class="keyword">wire</span> [<span class="number">15</span>:<span class="number">0</span>] wvHCount;   </span><br><span class="line"><span class="keyword">wire</span> [<span class="number">15</span>:<span class="number">0</span>] wvVCount;</span><br><span class="line"></span><br><span class="line"><span class="keyword">wire</span> wGo;</span><br><span class="line"><span class="keyword">wire</span> wWrite;</span><br><span class="line"><span class="keyword">wire</span> wSclEn, wSdaEn;</span><br><span class="line"><span class="keyword">reg</span> [<span class="number">9</span>:<span class="number">0</span>] rvCnt_d, rvCnt_q;</span><br><span class="line"><span class="keyword">wire</span> [<span class="number">23</span>:<span class="number">0</span>] wvI2cStream;</span><br><span class="line"><span class="keyword">wire</span> wSetDataReq;</span><br><span class="line"><span class="keyword">wire</span> [<span class="number">7</span>:<span class="number">0</span>] wvSetData;</span><br><span class="line"><span class="keyword">wire</span> wI2cIdle;</span><br><span class="line"></span><br><span class="line"><span class="keyword">wire</span> clk148p5M;</span><br><span class="line"><span class="keyword">wire</span> clk27M;</span><br><span class="line"><span class="keyword">wire</span> rstN;</span><br><span class="line"></span><br><span class="line">clk_wiz_0 instance_name (</span><br><span class="line">    <span class="comment">// Clock out ports</span></span><br><span class="line">    <span class="variable">.clk_out1</span>(clk148p5M),     <span class="comment">// output clk_out1</span></span><br><span class="line">    <span class="variable">.clk_out2</span>(clk27M),     <span class="comment">// output clk_out2</span></span><br><span class="line">    <span class="comment">// Status and control signals</span></span><br><span class="line">    <span class="variable">.reset</span>(RESET_N), <span class="comment">// input reset</span></span><br><span class="line">    <span class="variable">.locked</span>(rstN),       <span class="comment">// output locked</span></span><br><span class="line">   <span class="comment">// Clock in ports</span></span><br><span class="line">    <span class="variable">.clk_in1_p</span>(CLK_P),    <span class="comment">// input clk_in1_p</span></span><br><span class="line">    <span class="variable">.clk_in1_n</span>(CLK_N)</span><br><span class="line">);    <span class="comment">// input clk_in1_n</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">assign</span> HDMI_CLK = clk148p5M;</span><br><span class="line"><span class="keyword">assign</span> HDMI_RESET_N = rstN;</span><br><span class="line"></span><br><span class="line">timing #(</span><br><span class="line"><span class="variable">.H_SYNC_PULSE</span>       (H_SYNC_PULSE),</span><br><span class="line"><span class="variable">.H_FRONT_PORCH</span>      (H_FRONT_PORCH),</span><br><span class="line"><span class="variable">.H_BACK_PORCH</span>       (H_BACK_PORCH),</span><br><span class="line"><span class="variable">.H_ACTIVE</span>           (H_ACTIVE),</span><br><span class="line"><span class="variable">.V_SYNC_PULSE</span>       (V_SYNC_PULSE),</span><br><span class="line"><span class="variable">.V_FRONT_PORCH</span>      (V_FRONT_PORCH),</span><br><span class="line"><span class="variable">.V_BACK_PORCH</span>       (V_BACK_PORCH),</span><br><span class="line"><span class="variable">.V_ACTIVE</span>           (V_ACTIVE)</span><br><span class="line">)</span><br><span class="line">timing_inst (</span><br><span class="line">    <span class="variable">.clk</span>            (clk148p5M), <span class="comment">//pixel clock</span></span><br><span class="line">    <span class="variable">.rstN</span>           (rstN),</span><br><span class="line"></span><br><span class="line">    <span class="variable">.oHSync</span>         (wHSync     ),</span><br><span class="line">    <span class="variable">.oVSync</span>         (wVSync     ),</span><br><span class="line">    <span class="variable">.oActiveArea</span>    (wActiveArea),</span><br><span class="line">    <span class="variable">.ovHCount</span>       (wvHCount   ),</span><br><span class="line">    <span class="variable">.ovVCount</span>       (wvVCount   )</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">data data_inst (</span><br><span class="line">    <span class="variable">.clk</span>            (clk148p5M), <span class="comment">//pixel clock</span></span><br><span class="line">    <span class="variable">.rstN</span>           (rstN),</span><br><span class="line"></span><br><span class="line">    <span class="variable">.iHSync</span>         (wHSync     ),    </span><br><span class="line">    <span class="variable">.iVSync</span>         (wVSync     ),</span><br><span class="line">    <span class="variable">.iActiveArea</span>    (wActiveArea),</span><br><span class="line">    <span class="variable">.ivHCount</span>       (wvHCount   ),</span><br><span class="line">    <span class="variable">.ivVCount</span>       (wvVCount   ),</span><br><span class="line"></span><br><span class="line">    <span class="variable">.oHSync</span>         (HDMI_HS),</span><br><span class="line">    <span class="variable">.oVSync</span>         (HDMI_VS),</span><br><span class="line">    <span class="variable">.oActiveArea</span>    (HDMI_DE),</span><br><span class="line">    <span class="variable">.ovRData</span>        (HDMI_R_DATA),</span><br><span class="line">    <span class="variable">.ovGData</span>        (HDMI_G_DATA),</span><br><span class="line">    <span class="variable">.ovBData</span>        (HDMI_B_DATA)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">wire</span> AddCnt = (rvCnt_q &lt; <span class="number">1000</span>);</span><br><span class="line"><span class="keyword">always</span> @(<span class="keyword">posedge</span> clk27M <span class="keyword">or</span> <span class="keyword">negedge</span> rstN) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(!rstN)</span><br><span class="line">        rvCnt_q &lt;= <span class="number">10'h0</span>;</span><br><span class="line">    <span class="keyword">else</span> </span><br><span class="line">        rvCnt_q &lt;= rvCnt_d;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">always</span> @(*) <span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(AddCnt)</span><br><span class="line">        rvCnt_d = rvCnt_q + <span class="number">1'b1</span>;</span><br><span class="line">    <span class="keyword">else</span> </span><br><span class="line">        rvCnt_d = rvCnt_q;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">assign</span> wWrite = (rvCnt_q == <span class="number">999</span>);</span><br><span class="line"></span><br><span class="line">i2c_master </span><br><span class="line"><span class="variable">#(.IIC_SPEED(5300))</span> </span><br><span class="line">i2c_master_inst (</span><br><span class="line">    <span class="variable">.clk</span>            (clk27M),</span><br><span class="line">    <span class="variable">.rstN</span>           (rstN),</span><br><span class="line"></span><br><span class="line">    <span class="variable">.iSdaIn</span>         (HDMI_SDA),</span><br><span class="line">    <span class="variable">.oSdaEn</span>         (wSdaEn),</span><br><span class="line">    <span class="variable">.oSclEn</span>         (wSclEn),</span><br><span class="line">    <span class="variable">.iGo</span>            (wGo),                          <span class="comment">//state machine go (tick)</span></span><br><span class="line">    <span class="variable">.iRWn</span>           (wvI2cStream[<span class="number">16</span>]),              <span class="comment">//read or write control (tick)</span></span><br><span class="line">    <span class="variable">.ivDeviceID</span>     (wvI2cStream[<span class="number">23</span>:<span class="number">17</span>]),           <span class="comment">//Device ID</span></span><br><span class="line">    <span class="variable">.ivAddress</span>      (wvI2cStream[<span class="number">15</span>:<span class="number">8</span>]),            <span class="comment">//Address</span></span><br><span class="line">    <span class="variable">.ivSetData</span>      (wvSetData),                    <span class="comment">//set I2C data</span></span><br><span class="line">    <span class="variable">.ovGetData</span>      (),                             <span class="comment">//get I2C data</span></span><br><span class="line">    <span class="variable">.ivWriCnt</span>       (wvI2cStream[<span class="number">7</span>:<span class="number">0</span>]),             <span class="comment">//set write number</span></span><br><span class="line">    <span class="variable">.ivReaCnt</span>       (wvI2cStream[<span class="number">7</span>:<span class="number">0</span>]),             <span class="comment">//set read number</span></span><br><span class="line">    <span class="variable">.oGetDataDone</span>   (),                             <span class="comment">//get I2C data done</span></span><br><span class="line">    <span class="variable">.oSetDataReq</span>    (wSetDataReq),                  <span class="comment">//set I2C data done</span></span><br><span class="line">    <span class="variable">.oI2cIdle</span>       (wI2cIdle)</span><br><span class="line">);</span><br><span class="line"><span class="keyword">assign</span> HDMI_SDA = wSdaEn ? <span class="number">1'bz</span> : <span class="number">1'b0</span>;</span><br><span class="line"><span class="keyword">assign</span> HDMI_SCL = wSclEn ? <span class="number">1'bz</span> : <span class="number">1'b0</span>;</span><br><span class="line"></span><br><span class="line">i2c_controller_v2 i2c_controller_v2_inst (</span><br><span class="line">    <span class="variable">.clk</span>            (clk27M),</span><br><span class="line">    <span class="variable">.rstN</span>           (rstN),</span><br><span class="line"></span><br><span class="line">    <span class="variable">.iControllerGo</span>  (wWrite),</span><br><span class="line">    <span class="variable">.oGo</span>            (wGo),</span><br><span class="line">    <span class="variable">.iI2cIdle</span>       (wI2cIdle),</span><br><span class="line">    <span class="variable">.iWriteByteDone</span> (wSetDataReq),</span><br><span class="line">    <span class="variable">.ovSetData</span>      (wvSetData),</span><br><span class="line">    <span class="variable">.ovI2cStream</span>    (wvI2cStream) <span class="comment">//slave_address(7 bits), read/write(1 bit), address(1 byte), data number(1 byte)</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></table></figure>
+<h2 id="實際效果"><a href="#實際效果" class="headerlink" title="實際效果"></a>實際效果</h2><blockquote class="imgur-embed-pub" lang="en" data-id="a/C83iD4f"  ><a href="//imgur.com/a/C83iD4f" target="_blank" rel="noopener">FPGA - HV color bar</a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ARTY-A7/" rel="tag"># ARTY_A7</a>
+          
+            <a href="/tags/color-bar/" rel="tag"># color bar</a>
+          
+            <a href="/tags/white-frame/" rel="tag"># white frame</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/07/HDMI-LOOP/" rel="next" title="HDMI_LOOP">
+                <i class="fa fa-chevron-left"></i> HDMI_LOOP
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Tien Yao" />
+            
+              <p class="site-author-name" itemprop="name">Tien Yao</p>
+              <p class="site-description motion-element" itemprop="description">燃燒 coding 魂</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">文章</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分類</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">標籤</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:hsutienyao@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.youtube.com/watch?v=mU3sdp6XxcE&list=PLLYBmbTzkePEGV2iUvuCgX6QJZTZ_KcWv" target="_blank" title="YouTube">
+                      
+                        <i class="fa fa-fw fa-youtube"></i>YouTube</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#相關知識"><span class="nav-number">1.</span> <span class="nav-text">相關知識</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#時序訊號控制"><span class="nav-number">2.</span> <span class="nav-text">時序訊號控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#資料輸出"><span class="nav-number">3.</span> <span class="nav-text">資料輸出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TOP層"><span class="nav-number">4.</span> <span class="nav-text">TOP層</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#實際效果"><span class="nav-number">5.</span> <span class="nav-text">實際效果</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  #<span class="with-love">
+  <span class="with-love" id="heart">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tien Yao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 強力驅動</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主題 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase-firestore.js"></script>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.5.1/bluebird.core.min.js"></script>
+  
+  <script>
+    (function () {
+
+      firebase.initializeApp({
+        apiKey: 'AIzaSyBW5uJUWtsUAvoY_3IMfAZlP6zgoOSIwP4',
+        projectId: 'tienyaohsuhexo'
+      })
+
+      function getCount(doc, increaseCount) {
+        //increaseCount will be false when not in article page
+
+        return doc.get().then(function (d) {
+          var count
+          if (!d.exists) { //has no data, initialize count
+            if (increaseCount) {
+              doc.set({
+                count: 1
+              })
+              count = 1
+            }
+            else {
+              count = 0
+            }
+          }
+          else { //has data
+            count = d.data().count
+            if (increaseCount) {
+              if (!(window.localStorage && window.localStorage.getItem(title))) { //if first view this article
+                doc.set({ //increase count
+                  count: count + 1
+                })
+                count++
+              }
+            }
+          }
+          if (window.localStorage && increaseCount) { //mark as visited
+            localStorage.setItem(title, true)
+          }
+
+          return count
+        })
+      }
+
+      function appendCountTo(el) {
+        return function (count) {
+          $(el).append(
+            $('<span>').addClass('post-visitors-count').append(
+              $('<span>').addClass('post-meta-divider').text('|')
+            ).append(
+              $('<span>').addClass('post-meta-item-icon').append(
+                $('<i>').addClass('fa fa-users')
+              )
+              ).append($('<span>').text('閱讀次數   ' + count))
+          )
+        }
+      }
+
+      var db = firebase.firestore()
+      var articles = db.collection('articles')
+
+      //https://hexo.io/zh-tw/docs/variables.html
+      var isPost = 'Color_bar及白框顯示'.length > 0
+      var isArchive = '' === 'true'
+      var isCategory = ''.length > 0
+      var isTag = ''.length > 0
+
+      if (isPost) { //is article page
+        var title = 'Color_bar及白框顯示'
+        var doc = articles.doc(title)
+
+        getCount(doc, true).then(appendCountTo($('.post-meta')))
+      }
+      else if (!isArchive && !isCategory && !isTag) { //is index page
+        var titles = [] //array to titles
+
+        var postsstr = '' //if you have a better way to get titles of posts, please change it
+        eval(postsstr)
+
+        var promises = titles.map(function (title) {
+          return articles.doc(title)
+        }).map(function (doc) {
+          return getCount(doc)
+        })
+        Promise.all(promises).then(function (counts) {
+          var metas = $('.post-meta')
+          counts.forEach(function (val, idx) {
+            appendCountTo(metas[idx])(val)
+          })
+        })
+      }
+    })()
+  </script>
+
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/src/exturl.js?v=5.1.4"></script>
+
+
+</body>
+</html>
